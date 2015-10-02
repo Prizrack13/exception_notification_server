@@ -1,0 +1,3 @@
+module ExceptionNotificationServer
+  VERSION = '0.0.1'
+end

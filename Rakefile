@@ -11,6 +11,9 @@ rescue Bundler::BundlerError => e
 end
 require 'rake'
 
+APP_RAKEFILE = File.expand_path('../test/dummy/Rakefile', __FILE__)
+load 'rails/tasks/engine.rake'
+
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://guides.rubygems.org/specification-reference/ for more options
@@ -28,7 +31,7 @@ Jeweler::RubygemsDotOrgTasks.new
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
   test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
+  test.pattern = 'test/**/*_test.rb'
   test.verbose = true
 end
 
