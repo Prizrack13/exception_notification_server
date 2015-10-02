@@ -20,10 +20,15 @@ Jeweler::Tasks.new do |gem|
   gem.name = 'exception_notification_server'
   gem.homepage = 'http://github.com/prizrack13/exception_notification_server'
   gem.license = 'MIT'
-  gem.summary = %(TODO: one-line summary of your gem)
-  gem.description = %(TODO: longer description of your gem)
+  gem.summary = %(Exception Notifiaction Server)
+  gem.description = %(Gem that receive errors from exception_notification gem and show it grouped on pages)
   gem.email = 'Prizrack13@mail.ru'
   gem.authors = ['Anatoliy Varanitsa']
+  gem.platform = Gem::Platform::RUBY
+  gem.required_ruby_version = '>= 1.9.2'
+  gem.files = `git ls-files`.split($INPUT_RECORD_SEPARATOR).delete_if { |f| f == 'bin/rails' }
+  gem.executables = gem.files.grep(/^bin\//) { |f| File.basename(f) }.delete_if { |f| f == 'rails' }
+  gem.test_files    = gem.files.grep(/^(test|spec|features)\//)
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
