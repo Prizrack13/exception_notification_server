@@ -1,0 +1,7 @@
+.filter
+  = form_tag '', remote: true, method: :get do
+    = select_tag :status, status_options(selected: params[:status]), onchange: '$(this.form).trigger(\'submit.rails\')'
+    = select_tag :application, application_options(selected: params[:application]), prompt: 'All', onchange: '$(this.form).trigger(\'submit.rails\')'
+    = select_tag :env, environment_options(selected: params[:env]), onchange: '$(this.form).trigger(\'submit.rails\')'
+= render partial: 'exception_notification_server/notifications/notifications', object: @notifications, as: :notifications
+= will_paginate @notifications, remote: true

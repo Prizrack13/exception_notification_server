@@ -1,0 +1,17 @@
+!!!
+%html
+  /
+    ~ logo_string.html_safe
+    ~ author
+  %head
+    %title ExceptionNotificationServer
+    = stylesheet_link_tag 'exception_notification_server/application', media: 'all'
+    = csrf_meta_tags
+    :coffeescript
+      console.log(#{"\n#{logo_string}\n#{author}".to_json})
+  %body{:class => "#{controller.controller_name}_#{controller.action_name} #{controller.controller_name}_controller"}
+    %header= link_to 'ExceptionNotifications', notifications_path, class: 'logo'
+    .content= yield
+    = javascript_include_tag 'exception_notification_server/application'
+    /[if lt IE 8]
+      = javascript_include_tag 'exception_notification_server/flot/excanvas'

@@ -1,0 +1,32 @@
+:ruby
+  count = local_assigns.fetch :count, true
+  last_time = local_assigns.fetch :last_time, true
+%table
+  %thead
+    %tr
+      %th
+      %th.hide-md Class
+      %th Message
+      %th.hide-md.hide-lg Server
+      %th.hide-md.hide-lg Process
+      %th.hide-md Created at
+      - if last_time
+        %th.hide-md Last time
+      - if count
+        %th Last 30 days
+        %th Total count
+  %tbody
+    - notifications.each do |notification|
+      %tr
+        %td= link_to notification.id, notification_path(notification)
+        %td.hide-md= link_to notification.exception_class, notification_path(notification)
+        %td= link_to notification.exception_message, notification_path(notification)
+        %td.hide-md.hide-lg= link_to notification.server, notification_path(notification)
+        %td.hide-md.hide-lg= link_to notification.process, notification_path(notification)
+        %td.hide-md= notification.created_at.strftime(time_format)
+        - if last_time
+          %td.hide-md= notification.last_time.strftime(time_format)
+        - if count
+          %td
+            %div.sparkline{data: {values: notification.similar_count_sparkline.to_json}}
+          %td= notification.similar_count

@@ -1,0 +1,56 @@
+.buttons
+  = link_to 'Investigate', investigate_notification_path, data: {method: :put} if @notification.status.to_sym == :new
+  = link_to 'Fix', fix_notification_path, data: {method: :put} if @notification.status.to_sym == :investigating
+  = link_to 'Renew', renew_notification_path, data: {method: :put} if @notification.status.to_sym == :fixed
+.graphic
+  %h3 Last 3 month count:
+  .graph{data: {values: @notification.similar_count_flot.to_json}}
+.id
+  %h3
+    Id:
+    .inline-value= @notification.id
+.status
+  %h3
+    Status:
+    .inline-value= @notification.status
+.exception-hash
+  %h3
+    Exception hash:
+    .inline-value= @notification.exception_hash
+.exception-class
+  %h3
+    Exception class:
+    .inline-value= @notification.exception_class
+.exception-message
+  %h3
+    Exception message:
+    .inline-value= @notification.exception_message
+.server
+  %h3
+    Server:
+    .inline-value= @notification.server
+.process
+  %h3
+    Process:
+    .inline-value= @notification.process
+.rails-root
+  %h3
+    Rails root:
+    .inline-value= @notification.rails_root
+.backtrace
+  %h3 Backtrace
+  = pretty_json @notification.backtrace
+.data
+  %h3 Data
+  = pretty_json @notification.data
+.request
+  %h3 Request
+  = pretty_json @notification.request
+.session
+  %h3 Session
+  = pretty_json @notification.session
+.environment
+  %h3 Environment
+  = pretty_json @notification.environment
+- if @notification.similar.to_a.present?
+  = render partial: 'exception_notification_server/notifications/notifications', object: @notification.similar, as: :notifications, locals: {count: false, last_time: false}
