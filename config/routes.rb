@@ -6,4 +6,5 @@ ExceptionNotificationServer::Engine.routes.draw do
       put :renew
     end
   end
+  root to: 'notifications#index'
 end

@@ -12,7 +12,7 @@ module ExceptionNotificationServer
       end
 
       def mount_engine
-        route 'mount ExceptionNotificationServer::Engine => \'/notifier\''
+        route 'mount ExceptionNotificationServer::Engine, at: \'/notifier\', as: \'notifier\''
       end
 
       def create_ckeditor_migration
@@ -24,7 +24,7 @@ module ExceptionNotificationServer
           @source_root ||= File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
         end
 
-        def next_migration_number(dirname)
+        def next_migration_number(_dirname)
           Time.now.strftime('%Y%m%d%H%M%S')
         end
       end

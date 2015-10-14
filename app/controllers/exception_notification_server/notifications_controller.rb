@@ -11,13 +11,14 @@ module ExceptionNotificationServer
       params[:env] ||= Rails.env
       params[:status] ||= :new
       @notifications = Notification.base_notifications(params[:status])
-                           .application(params[:application])
-                           .env(params[:env])
-                           .includes(:childrens)
-                           .joins('LEFT JOIN "exception_notification_server_notifications" "ensn" on "ensn"."parent_id" = "exception_notification_server_notifications"."id"')
-                           .group('"exception_notification_server_notifications"."id"')
-                           .order('count(ensn.id) DESC')
-                           .paginate(page: params[:page], per_page: 10)
+                       .application(params[:application])
+                       .env(params[:env])
+                       .includes(:childrens)
+                       .joins('LEFT JOIN "exception_notification_server_notifications" "ensn" on "ensn"."parent_id" = "exception_notification_server_notifications"."id"')
+                       .group('"exception_notification_server_notifications"."id"')
+                       .order('count(ensn.id) DESC')
+                       .paginate(page: params[:page], per_page: 10)
+      # .where('last month')
       respond_with @notifications
     end
 
@@ -29,6 +30,7 @@ module ExceptionNotificationServer
     end
 
     def show
+      require 'coderay'
       respond_with @notification
     end
 
@@ -65,8 +67,8 @@ module ExceptionNotificationServer
     rescue ActiveRecord::RecordNotFound
       flash[:alert] = "Can't find notification with id #{params[:id]}."
       respond_to do |format|
-        format.js{ render js: "window.location = '#{notifications_url}';" }
-        format.html{ redirect_to notifications_path }
+        format.js { render js: "window.location = '#{notifications_url}';" }
+        format.html { redirect_to notifications_path }
       end
     end
 
@@ -85,7 +87,7 @@ module ExceptionNotificationServer
         request: params[:request],
         session: params[:session],
         environment: params[:environment]
-      }.delete_if{|_, value| value.blank?}
+      }.delete_if { |_, value| value.blank? }
     end
 
     def notification_params_update

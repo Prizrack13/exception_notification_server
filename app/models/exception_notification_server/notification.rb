@@ -9,13 +9,13 @@ module ExceptionNotificationServer
     belongs_to :parent, class: ExceptionNotificationServer::Notification
     has_many :childrens, class: ExceptionNotificationServer::Notification, foreign_key: :parent_id
 
-    scope :base_notifications, ->(status = nil){ status.present? ? where(parent: nil, status: status) : where(parent: nil) }
+    scope :base_notifications, ->(status = nil) { status.present? ? where(parent: nil, status: status) : where(parent: nil) }
     STATUSES = [:new, :investigating, :fixed].freeze
     STATUSES.each do |status|
-      scope "#{status}_notifications", ->{ where(status: status) }
+      scope "#{status}_notifications", -> { where(status: status) }
     end
-    scope :application, ->(application = nil){ application.present? ? where(application: application) : self.all }
-    scope :env, ->(env = nil){ where(env: env || Rails.env) }
+    scope :application, ->(application = nil) { application.present? ? where(application: application) : all }
+    scope :env, ->(env = nil) { where(env: env || Rails.env) }
 
     before_create do
       self.status = :new
@@ -29,7 +29,7 @@ module ExceptionNotificationServer
 
     def similar_count(from = nil)
       return childrens.length + 1 if from.nil?
-      childrens.select{|notification| notification.created_at >= from}.length + (created_at >= from ? 1 : 0)
+      childrens.count { |notification| notification.created_at >= from } + (created_at >= from ? 1 : 0)
     end
 
     def similar_count_sparkline(from = 1.month.ago.beginning_of_day)
@@ -41,7 +41,7 @@ module ExceptionNotificationServer
     end
 
     def last_time
-      [self,  *childrens].sort_by(&:created_at).last.created_at
+      [self, *childrens].sort_by(&:created_at).last.created_at
     end
 
     def update_recursive(updates)
@@ -51,8 +51,8 @@ module ExceptionNotificationServer
     protected
 
     def graph_data(from)
-      result = from.to_datetime.step(Time.zone.now.to_datetime, 1).map {|time| [time.beginning_of_day.to_i * 1000, 0]}.to_h
-      childrens.each{|notification| result[notification.created_at.beginning_of_day.to_i * 1000] += 1 if notification.created_at >= from}
+      result = from.to_datetime.step(Time.zone.now.to_datetime, 1).map { |time| [time.beginning_of_day.to_i * 1000, 0] }.to_h
+      childrens.each { |notification| result[notification.created_at.beginning_of_day.to_i * 1000] += 1 if notification.created_at >= from }
       result[created_at.beginning_of_day.to_i * 1000] += 1 if created_at >= from
       result
     end

@@ -1,7 +1,9 @@
+require 'rubygems'
+require 'coderay'
 require 'exception_notification_server/engine'
 
 module ExceptionNotificationServer
-  def self.configure(&block)
+  def self.configure(&_block)
     yield configuration
   end
 

@@ -10,16 +10,16 @@ module ExceptionNotificationServer
     end
 
     def status_options(options)
-      options_for_select(Notification::STATUSES.map{|status| [status.to_s.humanize, status]}, options[:selected])
+      options_for_select(Notification::STATUSES.map { |status| [status.to_s.humanize, status] }, options[:selected])
     end
 
     def application_options(options)
-      options_for_select(Notification.group(:application).pluck(:application).map{|application| [application.humanize, application]}, options[:selected])
+      options_for_select(Notification.group(:application).pluck(:application).map { |application| [application.humanize, application] }, options[:selected])
     end
 
     def environment_options(options)
-      default_environment = ['production', 'staging', 'development', 'test']
-      options_for_select((default_environment + Notification.group(:env).pluck(:env)).uniq.map{|env| [env.humanize, env]}, options[:selected])
+      default_environment = %w(production staging development test)
+      options_for_select((default_environment + Notification.group(:env).pluck(:env)).uniq.map { |env| [env.humanize, env] }, options[:selected])
     end
 
     def time_format

@@ -25,32 +25,42 @@
   %h3
     Exception message:
     .inline-value= @notification.exception_message
-.server
-  %h3
-    Server:
-    .inline-value= @notification.server
-.process
-  %h3
-    Process:
-    .inline-value= @notification.process
-.rails-root
-  %h3
-    Rails root:
-    .inline-value= @notification.rails_root
-.backtrace
-  %h3 Backtrace
-  = pretty_json @notification.backtrace
-.data
-  %h3 Data
-  = pretty_json @notification.data
-.request
-  %h3 Request
-  = pretty_json @notification.request
-.session
-  %h3 Session
-  = pretty_json @notification.session
-.environment
-  %h3 Environment
-  = pretty_json @notification.environment
+- if @notification.server.present?
+  .server
+    %h3
+      Server:
+      .inline-value= @notification.server
+- if @notification.process.present?
+  .process
+    %h3
+      Process:
+      .inline-value= @notification.process
+- if @notification.rails_root.present?
+  .rails-root
+    %h3
+      Rails root:
+      .inline-value= @notification.rails_root
+- if @notification.backtrace.present?
+  .backtrace
+    %h3 Backtrace
+    = pretty_json @notification.backtrace
+- if @notification.data.present?
+  .data
+    %h3 Data
+    = pretty_json @notification.data
+- if @notification.request.present?
+  .request
+    %h3 Request
+    = pretty_json @notification.request
+- if @notification.session.present?
+  .session
+    %h3 Session
+    = pretty_json @notification.session
+- if @notification.environment.present?
+  .environment
+    %h3 Environment
+    = pretty_json @notification.environment
 - if @notification.similar.to_a.present?
+  %br
   = render partial: 'exception_notification_server/notifications/notifications', object: @notification.similar, as: :notifications, locals: {count: false, last_time: false}
+%br

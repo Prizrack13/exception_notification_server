@@ -27,8 +27,8 @@ Jeweler::Tasks.new do |gem|
   gem.platform = Gem::Platform::RUBY
   gem.required_ruby_version = '>= 1.9.2'
   gem.files = `git ls-files`.split($INPUT_RECORD_SEPARATOR).delete_if { |f| f == 'bin/rails' }
-  gem.executables = gem.files.grep(/^bin\//) { |f| File.basename(f) }.delete_if { |f| f == 'rails' }
-  gem.test_files    = gem.files.grep(/^(test|spec|features)\//)
+  gem.executables = gem.files.grep(%r{^bin\/}) { |f| File.basename(f) }.delete_if { |f| f == 'rails' }
+  gem.test_files    = gem.files.grep(%r{^(test|spec|features)\/})
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
