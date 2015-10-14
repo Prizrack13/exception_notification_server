@@ -63,7 +63,7 @@ module ExceptionNotificationServer
     end
 
     def gen_exception_hash
-      Digest::SHA1.hexdigest("#{application}#{exception_class}#{exception_message}#{backtrace.to_s.gsub(rails_root)}")
+      Digest::SHA1.hexdigest("#{application}#{exception_class}#{exception_message}#{backtrace.to_s.gsub(rails_root, '')}")
     end
   end
 end
