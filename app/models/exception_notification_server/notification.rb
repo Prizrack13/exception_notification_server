@@ -45,7 +45,8 @@ module ExceptionNotificationServer
     end
 
     def update_recursive(updates)
-      Notification.where(arel_table[:id].eq(parent_id).or(arel_table[:parent_id].eq(parent_id))).update_all(updates)
+      base_id = parent_id || id
+      Notification.where(arel_table[:id].eq(base_id).or(arel_table[:parent_id].eq(base_id))).update_all(updates) if base_id.present?
     end
 
     protected
