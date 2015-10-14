@@ -6,8 +6,8 @@ module ExceptionNotificationServer
 
     def redirect_to_root
       respond_to do |format|
-        format.js { render js: "window.location = '#{root_url}';" }
-        format.all { redirect_to root_url }
+        format.js { render js: "window.location = '#{Rails.application.routes.url_helpers}';" }
+        format.all { redirect_to Rails.application.routes.url_helpers }
       end
     end
 
