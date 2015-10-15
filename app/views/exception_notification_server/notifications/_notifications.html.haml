@@ -1,14 +1,17 @@
 :ruby
   count = local_assigns.fetch :count, true
   last_time = local_assigns.fetch :last_time, true
+  env = local_assigns.fetch :env, false
 %table
   %thead
     %tr
       %th
       %th.hide-md Class
       %th Message
-      %th.hide-md.hide-lg Server
+      %th.hide-md.hide-lg{style: 'width: 100px'} Server
       %th.hide-md.hide-lg Process
+      - if env
+        %th.hide-md.hide-lg Environment
       %th.hide-md Created at
       - if last_time
         %th.hide-md Last time
@@ -23,6 +26,8 @@
         %td= link_to notification.exception_message, notification_path(notification)
         %td.hide-md.hide-lg= link_to notification.server, notification_path(notification)
         %td.hide-md.hide-lg= link_to notification.process, notification_path(notification)
+        - if env
+          %td.hide-md.hide-lg= link_to notification.env, notification_path(notification)
         %td.hide-md= notification.created_at.strftime(time_format)
         - if last_time
           %td.hide-md= notification.last_time.strftime(time_format)

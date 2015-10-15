@@ -25,6 +25,16 @@
   %h3
     Exception message:
     .inline-value= @notification.exception_message
+- if @notification.application.present?
+  .environment
+    %h3
+      Application:
+      .inline-value= @notification.application
+- if @notification.env.present?
+  .environment
+    %h3
+      Environment:
+      .inline-value= @notification.env
 - if @notification.server.present?
   .server
     %h3
@@ -62,5 +72,5 @@
     = pretty_json @notification.environment
 - if @notification.similar.to_a.present?
   %br
-  = render partial: 'exception_notification_server/notifications/notifications', object: @notification.similar, as: :notifications, locals: {count: false, last_time: false}
+  = render partial: 'exception_notification_server/notifications/notifications', object: @notification.similar, as: :notifications, locals: {count: false, last_time: false, env: true}
 %br
