@@ -64,7 +64,8 @@ module ExceptionNotificationServer
 
     [:data, :request, :session, :environment].each do |name|
       define_method "get_#{name}" do
-        send(name) || parent.try(name)
+        return send(name) if send(name).present?
+        parent.try(name) || send(name)
       end
     end
 
