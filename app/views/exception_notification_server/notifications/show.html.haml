@@ -55,22 +55,22 @@
   .backtrace
     %h3 Backtrace
     = pretty_json @notification.backtrace
-- if @notification.data.present?
+- if @notification.get_data.present?
   .data
     %h3 Data
-    = pretty_json @notification.data
-- if @notification.request.present?
+    = pretty_json @notification.get_data
+- if @notification.get_request.present?
   .request
     %h3 Request
-    = pretty_json @notification.request
-- if @notification.session.present?
+    = pretty_json @notification.get_request
+- if @notification.get_session.present?
   .session
     %h3 Session
-    = pretty_json @notification.session
-- if @notification.environment.present?
+    = pretty_json @notification.get_session
+- if @notification.get_environment.present?
   .environment
     %h3 Environment
-    = pretty_json @notification.environment
+    = pretty_json @notification.get_environment
 - if @notification.similar.to_a.present?
   %br
   = render partial: 'exception_notification_server/notifications/notifications', object: @notification.similar, as: :notifications, locals: {count: false, last_time: false, env: true}

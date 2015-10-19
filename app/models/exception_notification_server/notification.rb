@@ -58,14 +58,14 @@ module ExceptionNotificationServer
       update_recursive(data: nil, request: nil, session: nil, environment: nil)
     end
 
-    # We recover information from base notification. Better solution is just use base info but i wanna divide notifications.
-    def recover_data
-      base_notification = Notification.find(base_id)
-      update_recursive(data: base_notification.data, request: base_notification.request, session: base_notification.session, environment: base_notification.environment)
-    end
-
     def destroy_recursive
       Notification.where(arel_table[:id].eq(base_id).or(arel_table[:parent_id].eq(base_id))).delete_all if base_id.present?
+    end
+
+    [:data, :request, :session, :environment].each do |name|
+      define_method "get_#{name}" do
+        send(name) || parent.try(name)
+      end
     end
 
     protected

@@ -91,7 +91,6 @@ module ExceptionNotificationServer
     def update_notification(notification, notification_params = notification_params_update, recursive = true)
       notification.send("update#{'_recursive_all' if recursive}", notification_params)
       notification.remove_data if recursive && notification_params[:status] == :fixed
-      notification.recover_data if recursive && notification_params[:status] == :new && notification.status == 'fixed'
     end
 
     def notifications_actions(&block)
