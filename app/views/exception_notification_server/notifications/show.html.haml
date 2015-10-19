@@ -2,6 +2,7 @@
   = link_to 'Investigate', investigate_notification_path, data: {method: :put} if @notification.status.to_sym == :new
   = link_to 'Fix', fix_notification_path, data: {method: :put} if @notification.status.to_sym == :investigating
   = link_to 'Renew', renew_notification_path, data: {method: :put} if @notification.status.to_sym == :fixed
+  = link_to 'Destroy', notification_path, data: {method: :delete}
 .graphic
   %h3 Last 3 month count:
   .graph{data: {values: @notification.similar_count_flot.to_json}}

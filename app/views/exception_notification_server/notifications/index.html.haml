@@ -3,5 +3,10 @@
     = select_tag :status, status_options(selected: params[:status]), onchange: '$(this.form).trigger(\'submit.rails\')'
     = select_tag :application, application_options(selected: params[:application]), prompt: 'All', onchange: '$(this.form).trigger(\'submit.rails\')'
     = select_tag :env, environment_options(selected: params[:env]), onchange: '$(this.form).trigger(\'submit.rails\')'
-= render partial: 'exception_notification_server/notifications/notifications', object: @notifications, as: :notifications
+.actions
+  = link_to 'Investigate', investigate_notifications_path, data: {ajax_method: :put}
+  = link_to 'Fix', fix_notifications_path, data: {ajax_method: :put}
+  = link_to 'Renew', renew_notifications_path, data: {ajax_method: :put}
+  = link_to 'Destroy', notifications_path, data: {ajax_method: :delete}
+= render partial: 'exception_notification_server/notifications/notifications', object: @notifications, as: :notifications, locals: {env: true, checkbox: true}
 = will_paginate @notifications, remote: true

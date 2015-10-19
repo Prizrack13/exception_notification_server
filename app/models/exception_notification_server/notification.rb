@@ -15,7 +15,7 @@ module ExceptionNotificationServer
       scope "#{status}_notifications", -> { where(status: status) }
     end
     scope :application, ->(application = nil) { application.present? ? where(application: application) : all }
-    scope :env, ->(env = nil) { where(env: env || Rails.env) }
+    scope :env, ->(env = nil) { env == 'all' ? all : where(env: env || Rails.env) }
 
     before_create do
       self.status = :new
@@ -45,8 +45,27 @@ module ExceptionNotificationServer
     end
 
     def update_recursive(updates)
-      base_id = parent_id || id
+      Notification.where(parent_id: base_id).update_all(updates) if base_id.present?
+    end
+
+    def update_recursive_all(updates)
       Notification.where(arel_table[:id].eq(base_id).or(arel_table[:parent_id].eq(base_id))).update_all(updates) if base_id.present?
+    end
+
+    # Those 4 fields can contain a lot of information (like 0.22mb), so we wanna decrease it by removing this info from children notification.
+    # I think it is enough to have this info in base notification.
+    def remove_data
+      update_recursive(data: nil, request: nil, session: nil, environment: nil)
+    end
+
+    # We recover information from base notification. Better solution is just use base info but i wanna divide notifications.
+    def recover_data
+      base_notification = Notification.find(base_id)
+      update_recursive(data: base_notification.data, request: base_notification.request, session: base_notification.session, environment: base_notification.environment)
+    end
+
+    def destroy_recursive
+      Notification.where(arel_table[:id].eq(base_id).or(arel_table[:parent_id].eq(base_id))).delete_all if base_id.present?
     end
 
     protected
@@ -64,6 +83,10 @@ module ExceptionNotificationServer
 
     def gen_exception_hash
       Digest::SHA1.hexdigest("#{application}#{exception_class}#{exception_message}#{backtrace.to_s.gsub(rails_root, '')}")
+    end
+
+    def base_id
+      parent_id || id
     end
   end
 end

@@ -2,10 +2,13 @@
   count = local_assigns.fetch :count, true
   last_time = local_assigns.fetch :last_time, true
   env = local_assigns.fetch :env, false
+  checkbox = local_assigns.fetch :checkbox, false
 %table
   %thead
     %tr
       %th
+      - if checkbox
+        %th= check_box_tag 'ids-select-all', 'select-all'
       %th.hide-md Class
       %th Message
       %th.hide-md.hide-lg{style: 'width: 100px'} Server
@@ -22,6 +25,8 @@
     - notifications.each do |notification|
       %tr
         %td= link_to notification.id, notification_path(notification)
+        - if checkbox
+          %td= check_box_tag 'ids[]', notification.id
         %td.hide-md= link_to notification.exception_class, notification_path(notification)
         %td= link_to notification.exception_message, notification_path(notification)
         %td.hide-md.hide-lg= link_to notification.server, notification_path(notification)

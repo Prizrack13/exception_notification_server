@@ -18,7 +18,7 @@ module ExceptionNotificationServer
     end
 
     def environment_options(options)
-      default_environment = %w(production staging development test)
+      default_environment = %w(all production staging development test)
       options_for_select((default_environment + Notification.group(:env).pluck(:env)).uniq.map { |env| [env.humanize, env] }, options[:selected])
     end
 

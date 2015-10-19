@@ -4,11 +4,11 @@ module ExceptionNotificationServer
                                  password: ExceptionNotificationServer.configuration.password, only: :create
     respond_to :html, :json, :js
 
-    before_filter :load_notification, only: [:show, :update, :investigate, :fix, :renew]
+    before_filter :load_notification, only: [:show, :update]
     skip_before_filter :redirect_to_root, only: [:create]
 
     def index
-      params[:env] ||= Rails.env
+      params[:env] ||= 'all'
       params[:status] ||= :new
       @notifications = Notification.base_notifications(params[:status])
                        .application(params[:application])
@@ -18,7 +18,6 @@ module ExceptionNotificationServer
                        .group('"exception_notification_server_notifications"."id"')
                        .order('count(ensn.id) DESC')
                        .paginate(page: params[:page], per_page: 10)
-      # .where('last month')
       respond_with @notifications
     end
 
@@ -35,29 +34,24 @@ module ExceptionNotificationServer
     end
 
     def update
-      @notification.send("update#{'_recursive' if params[:recursive]}", notification_params_update)
+      update_notification(@notification, notification_params_update, params[:recursive])
       respond_with @notification
     end
 
     def investigate
-      params[:recursive] = true
-      params[:notification] ||= {}
-      params[:notification][:status] = :investigating
-      update
+      notifications_actions{|notification| update_notification(notification, {status: :investigating}, true) }
     end
 
     def fix
-      params[:recursive] = true
-      params[:notification] ||= {}
-      params[:notification][:status] = :fixed
-      update
+      notifications_actions{|notification| update_notification(notification, {status: :fixed}, true) }
     end
 
     def renew
-      params[:recursive] = true
-      params[:notification] ||= {}
-      params[:notification][:status] = :new
-      update
+      notifications_actions{|notification| update_notification(notification, {status: :new}, true) }
+    end
+
+    def destroy
+      notifications_actions{|notification| notification.destroy_recursive }
     end
 
     protected
@@ -92,6 +86,18 @@ module ExceptionNotificationServer
 
     def notification_params_update
       params.require(:notification).permit!
+    end
+
+    def update_notification(notification, notification_params = notification_params_update, recursive = true)
+      notification.send("update#{'_recursive_all' if recursive}", notification_params)
+      notification.remove_data if recursive && notification_params[:status] == :fixed
+      notification.recover_data if recursive && notification_params[:status] == :new && notification.status == 'fixed'
+    end
+
+    def notifications_actions(&block)
+      notications = Notification.where(id: params[:ids] || params[:id])
+      notications.each(&block)
+      params[:id] && notications.first ? respond_with(notications.first) : respond_with({}, {location: root_path})
     end
   end
 end
