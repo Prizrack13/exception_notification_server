@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new('>= 0') if s.respond_to? :required_rubygems_version=
   s.require_paths = ['lib']
   s.authors = ['Anatoliy Varanitsa']
-  s.date = '2015-10-15'
+  s.date = '2015-10-19'
   s.description = 'Gem that receive errors from exception_notification gem and show it grouped on pages'
   s.email = 'Prizrack13@mail.ru'
   s.extra_rdoc_files = [

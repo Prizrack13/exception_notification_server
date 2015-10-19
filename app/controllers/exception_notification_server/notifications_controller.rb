@@ -39,19 +39,19 @@ module ExceptionNotificationServer
     end
 
     def investigate
-      notifications_actions{|notification| update_notification(notification, {status: :investigating}, true) }
+      notifications_actions { |notification| update_notification(notification, { status: :investigating }, true) }
     end
 
     def fix
-      notifications_actions{|notification| update_notification(notification, {status: :fixed}, true) }
+      notifications_actions { |notification| update_notification(notification, { status: :fixed }, true) }
     end
 
     def renew
-      notifications_actions{|notification| update_notification(notification, {status: :new}, true) }
+      notifications_actions { |notification| update_notification(notification, { status: :new }, true) }
     end
 
     def destroy
-      notifications_actions{|notification| notification.destroy_recursive }
+      notifications_actions(&:destroy_recursive)
     end
 
     protected
@@ -97,7 +97,7 @@ module ExceptionNotificationServer
     def notifications_actions(&block)
       notications = Notification.where(id: params[:ids] || params[:id])
       notications.each(&block)
-      params[:id] && notications.first ? respond_with(notications.first) : respond_with({}, {location: root_path})
+      params[:id] && notications.first ? respond_with(notications.first) : respond_with({}, location: root_path)
     end
   end
 end
