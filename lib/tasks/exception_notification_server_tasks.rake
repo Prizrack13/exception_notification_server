@@ -10,7 +10,7 @@ namespace :exception_notification_server do
     end
     base_notifications = ExceptionNotificationServer::Notification.where(id: exception_hashes.values.map(&:first))
     exception_hashes.each do |exception_hash, ids|
-      base_notification = base_notifications.select{|notification| notification.id == ids.first}.first
+      base_notification = base_notifications.find { |notification| notification.id == ids.first }
       ExceptionNotificationServer::Notification.where(id: ids).update_all(exception_hash: exception_hash, parent_id: base_notification.id, status: base_notification.status)
       base_notification.remove_data if base_notification.status == 'fixed'
     end
