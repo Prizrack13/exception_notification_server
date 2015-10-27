@@ -83,7 +83,8 @@ module ExceptionNotificationServer
     end
 
     def gen_exception_hash
-      Digest::SHA1.hexdigest("#{application}#{exception_class}#{exception_message.gsub(/#<([a-zA-z]*):([0-9abcdefx]*)>/, '#<\1>')}#{backtrace.to_s.gsub(rails_root, '')}")
+      # .gsub(/#<([a-zA-z]*):([0-9abcdefx]*)>/, '#<\1>') doesn't work for #<#<#<Class:0x000000083c5340>:0x000000083c3d60>:0x000000083c3d60> or we should run N times
+      Digest::SHA1.hexdigest("#{application}#{exception_class}#{exception_message.gsub(/:([0-9abcdefx]*)>/, '>')}#{backtrace.to_s.gsub(rails_root, '')}")
     end
 
     def base_id
