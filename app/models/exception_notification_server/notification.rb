@@ -72,9 +72,9 @@ module ExceptionNotificationServer
     protected
 
     def graph_data(from)
-      result = from.to_datetime.step(Time.zone.now.to_datetime, 1).map { |time| [time.beginning_of_day.to_i * 1000, 0] }.to_h
-      childrens.each { |notification| result[notification.created_at.beginning_of_day.to_i * 1000] = result[notification.created_at.beginning_of_day.to_i * 1000].to_i + 1 if notification.created_at >= from }
-      result[created_at.beginning_of_day.to_i * 1000] = result[created_at.beginning_of_day.to_i * 1000].to_i + 1 if created_at >= from
+      result = from.to_datetime.step(Time.zone.now.to_datetime, 1).map { |time| [time.utc.beginning_of_day.to_i * 1000, 0] }.to_h
+      childrens.each { |notification| result[notification.created_at.utc.beginning_of_day.to_i * 1000] = result[notification.created_at.utc.beginning_of_day.to_i * 1000].to_i + 1 if notification.created_at >= from }
+      result[created_at.utc.beginning_of_day.to_i * 1000] = result[created_at.beginning_of_day.utc.to_i * 1000].to_i + 1 if created_at >= from
       result
     end
 
