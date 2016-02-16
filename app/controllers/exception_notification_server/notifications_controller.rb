@@ -30,6 +30,7 @@ module ExceptionNotificationServer
 
     def show
       require 'coderay'
+      @similar = @notification.similar.paginate(page: params[:page], per_page: 10)
       respond_with @notification
     end
 

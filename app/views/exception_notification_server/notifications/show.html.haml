@@ -71,7 +71,8 @@
   .environment
     %h3 Environment
     = pretty_json @notification.get_environment
-- if @notification.similar.to_a.present?
+- if @similar.to_a.present?
   %br
-  = render partial: 'exception_notification_server/notifications/notifications', object: @notification.similar, as: :notifications, locals: {count: false, last_time: false, env: true}
+  = render partial: 'exception_notification_server/notifications/notifications', object: @similar, as: :notifications, locals: {count: false, last_time: false, env: true}
+  = will_paginate @notifications, remote: true
 %br

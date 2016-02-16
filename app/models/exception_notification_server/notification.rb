@@ -7,7 +7,7 @@ module ExceptionNotificationServer
     serialize :environment, Hash
 
     belongs_to :parent, class: ExceptionNotificationServer::Notification
-    has_many :childrens, class: ExceptionNotificationServer::Notification, foreign_key: :parent_id
+    has_many :childrens, -> { select('id, parent_id, status, exception_hash, env, application, server, process, rails_root, exception_class, exception_message, created_at, updated_at') }, class: ExceptionNotificationServer::Notification, foreign_key: :parent_id
 
     scope :base_notifications, ->(status = nil) { status.present? ? where(parent: nil, status: status) : where(parent: nil) }
     STATUSES = [:new, :investigating, :fixed].freeze
@@ -24,7 +24,7 @@ module ExceptionNotificationServer
     end
 
     def similar
-      parent_id.nil? ? childrens : Notification.where(arel_table[:id].eq(parent_id).or(arel_table[:parent_id].eq(parent_id).and(arel_table[:id].eq(id).not)))
+      parent_id.nil? ? childrens : Notification.select('id, parent_id, status, exception_hash, env, application, server, process, rails_root, exception_class, exception_message, created_at, updated_at').where(arel_table[:id].eq(parent_id).or(arel_table[:parent_id].eq(parent_id).and(arel_table[:id].eq(id).not)))
     end
 
     def similar_count(from = nil)
